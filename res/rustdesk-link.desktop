@@ -1,10 +1,10 @@
 [Desktop Entry]
-Name=RustDesk
+Name=ZenyDesk
 NoDisplay=true
 MimeType=x-scheme-handler/rustdesk;
-TryExec=rustdesk
-Exec=rustdesk %u
-Icon=rustdesk
+TryExec=zenydesk
+Exec=zenydesk %u
+Icon=zenydesk
 Terminal=false
 Type=Application
 StartupNotify=false

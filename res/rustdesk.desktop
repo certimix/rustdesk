@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=RustDesk
+Name=ZenyDesk
 GenericName=Remote Desktop
 Comment=Remote Desktop
-Exec=rustdesk %u
-Icon=rustdesk
+Exec=zenydesk %u
+Icon=zenydesk
 Terminal=false
 Type=Application
 StartupNotify=true
@@ -16,4 +16,4 @@ X-Desktop-File-Install-Version=0.23
 
 [Desktop Action new-window]
 Name=Open a New Window
-Exec=rustdesk %u
+Exec=zenydesk %u
