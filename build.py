@@ -36,6 +36,34 @@ flutter_build_dir_2 = f'flutter/{flutter_build_dir}'
 skip_cargo = False
 
 
+def apply_zenydesk_config():
+    config_path = os.path.join(REPO_ROOT, 'libs', 'hbb_common', 'src', 'config.rs')
+    if os.path.isfile(config_path):
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            content = re.sub(
+                r'pub static ref APP_NAME: RwLock<String> = RwLock::new\("[^"]*"\.to_owned\(\)\);',
+                'pub static ref APP_NAME: RwLock<String> = RwLock::new("ZenyDesk".to_owned());',
+                content
+            )
+            content = re.sub(
+                r'pub const RENDEZVOUS_SERVERS: &\[&str\] = &\[[^\]]*\];',
+                'pub const RENDEZVOUS_SERVERS: &[&str] = &["zenydesk.com", "api.zenydesk.com.br"];',
+                content
+            )
+            content = re.sub(
+                r'pub const RS_PUB_KEY: &str = "[^"]*";',
+                'pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQCsWqmBw=";',
+                content
+            )
+            with open(config_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print("[ZenyDesk] Injected ZenyDesk sovereign servers & branding into hbb_common.")
+        except Exception as e:
+            print("[ZenyDesk] Warning applying config to hbb_common:", e)
+
+
 def get_deb_arch() -> str:
     custom_arch = os.environ.get("DEB_ARCH")
     if custom_arch is None:
@@ -195,7 +223,7 @@ def generate_build_script_for_docker():
             # flutter_rust_bridge
             dart pub global activate ffigen --version 5.0.1
             pushd /tmp && git clone https://github.com/SoLongAndThanksForAllThePizza/flutter_rust_bridge --depth=1 && popd
-            pushd /tmp/flutter_rust_bridge/frb_codegen && cargo install --path . --locked && popd
+            pushd /tmp/flutter_rust_bridge/frb_codegen && cargo install --path . && popd
             pushd flutter && flutter pub get && popd
             ~/.cargo/bin/flutter_rust_bridge_codegen --rust-input ./src/flutter_ffi.rs --dart-output ./flutter/lib/generated_bridge.dart
             # install vcpkg
@@ -698,7 +726,7 @@ def retarget_control_to_drm_variant():
 
 def build_flutter_deb(version, features):
     if not skip_cargo:
-        system2(f'cargo build --locked --features {features} --lib --release')
+        system2(f'cargo build --features {features} --lib --release')
         ffi_bindgen_function_refactor()
     os.chdir('flutter')
     system2('flutter build linux --release')
@@ -895,7 +923,7 @@ def build_flutter_dmg(version, features):
     if not skip_cargo:
         # set minimum osx build target, now is 10.14, which is the same as the flutter xcode project
         system2(
-            f'MACOSX_DEPLOYMENT_TARGET=10.14 cargo build --locked --features {features} --release')
+            f'MACOSX_DEPLOYMENT_TARGET=10.14 cargo build --features {features} --release')
     # copy dylib
     system2(
         "cp target/release/liblibrustdesk.dylib target/release/librustdesk.dylib")
@@ -917,7 +945,7 @@ def build_flutter_dmg(version, features):
 
 def build_flutter_arch_manjaro(version, features):
     if not skip_cargo:
-        system2(f'cargo build --locked --features {features} --lib --release')
+        system2(f'cargo build --features {features} --lib --release')
     ffi_bindgen_function_refactor()
     os.chdir('flutter')
     system2('flutter build linux --release')
@@ -928,7 +956,7 @@ def build_flutter_arch_manjaro(version, features):
 
 def build_flutter_windows(version, features, skip_portable_pack):
     if not skip_cargo:
-        system2(f'cargo build --locked --features {features} --lib --release')
+        system2(f'cargo build --features {features} --lib --release')
         if not os.path.exists("target/release/librustdesk.dll"):
             print("cargo build failed, please check rust source code.")
             exit(-1)
@@ -975,6 +1003,8 @@ def main():
         print(feats)
         return
 
+    apply_zenydesk_config()
+
     if os.path.exists(exe_path):
         os.unlink(exe_path)
     if os.path.isfile('/usr/bin/pacman'):
@@ -997,13 +1027,13 @@ def main():
     if windows:
         # build virtual display dynamic library
         os.chdir('libs/virtual_display/dylib')
-        system2('cargo build --locked --release')
+        system2('cargo build --release')
         os.chdir('../../..')
 
         if flutter:
             build_flutter_windows(version, features, args.skip_portable_pack)
             return
-        system2('cargo build --locked --release --features ' + features)
+        system2('cargo build --release --features ' + features)
         # system2('upx.exe target/release/rustdesk.exe')
         system2('mv target/release/rustdesk.exe target/release/RustDesk.exe')
         pa = os.environ.get('P')
@@ -1028,7 +1058,7 @@ def main():
         if flutter:
             build_flutter_arch_manjaro(version, features)
         else:
-            system2('cargo build --locked --release --features ' + features)
+            system2('cargo build --release --features ' + features)
             system2('git checkout src/ui/common.tis')
             system2('strip target/release/rustdesk')
             system2('ln -s res/pacman_install && ln -s res/PKGBUILD')
@@ -1037,7 +1067,7 @@ def main():
             version, version))
         # pacman -U ./rustdesk.pkg.tar.zst
     elif os.path.isfile('/usr/bin/yum'):
-        system2('cargo build --locked --release --features ' + features)
+        system2('cargo build --release --features ' + features)
         system2('strip target/release/rustdesk')
         system2(
             "sed -i 's/Version:    .*/Version:    %s/g' res/rpm.spec" % version)
@@ -1047,7 +1077,7 @@ def main():
                 version, version))
         # yum localinstall rustdesk.rpm
     elif os.path.isfile('/usr/bin/zypper'):
-        system2('cargo build --locked --release --features ' + features)
+        system2('cargo build --release --features ' + features)
         system2('strip target/release/rustdesk')
         system2(
             "sed -i 's/Version:    .*/Version:    %s/g' res/rpm-suse.spec" % version)
@@ -1066,7 +1096,7 @@ def main():
                 #     'mv target/release/bundle/deb/rustdesk*.deb ./flutter/rustdesk.deb')
                 build_flutter_deb(version, features)
         else:
-            system2('cargo --locked bundle --release --features ' + features)
+            system2('cargo bundle --release --features ' + features)
             if osx:
                 system2(
                     'strip target/release/bundle/osx/RustDesk.app/Contents/MacOS/rustdesk')
