@@ -7176,7 +7176,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "zenydesk"
+name = "rustdesk"
 version = "1.4.9"
 dependencies = [
  "android-wakelock",
