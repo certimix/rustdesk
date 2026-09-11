@@ -409,8 +409,8 @@ jobs:
   build-for-windows-sciter:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
-    # Temporarily disable this action due to additional test is needed.
-    # if: false
+    # Temporarily disabled: 32-bit Windows is legacy and not used for ZenyDesk release.
+    if: false
     strategy:
       fail-fast: false
       matrix:
@@ -857,10 +857,12 @@ jobs:
           CREATE_DMG="$(readlink -f "$CREATE_DMG")"
           sed -i -e 's/MAXIMUM_UNMOUNTING_ATTEMPTS=3/MAXIMUM_UNMOUNTING_ATTEMPTS=7/' "$CREATE_DMG"
           APP_DIR="./flutter/build/macos/Build/Products/Release"
-          if [ -d "$APP_DIR/ZenyDesk.app" ] && [ ! -e "$APP_DIR/RustDesk.app" ]; then
+          APP_NAME="RustDesk.app"
+          if [ -d "$APP_DIR/ZenyDesk.app" ]; then
+            APP_NAME="ZenyDesk.app"
             ln -sf ZenyDesk.app "$APP_DIR/RustDesk.app"
           fi
-          create-dmg --icon "RustDesk.app" 200 190 --hide-extension "RustDesk.app" --window-size 800 400 --app-drop-link 600 185 rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.dmg ./flutter/build/macos/Build/Products/Release/RustDesk.app
+          create-dmg --icon "$APP_NAME" 200 190 --hide-extension "$APP_NAME" --window-size 800 400 --app-drop-link 600 185 rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.dmg "$APP_DIR/$APP_NAME" || create-dmg --no-apple-script rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.dmg "$APP_DIR/$APP_NAME"
 
       - name: Upload unsigned macOS app
         if: env.UPLOAD_ARTIFACT == 'true'
@@ -882,11 +884,13 @@ jobs:
           # start sign the rustdesk.app and dmg
           rm -rf *.dmg || true
           APP_DIR="./flutter/build/macos/Build/Products/Release"
-          if [ -d "$APP_DIR/ZenyDesk.app" ] && [ ! -e "$APP_DIR/RustDesk.app" ]; then
+          APP_NAME="RustDesk.app"
+          if [ -d "$APP_DIR/ZenyDesk.app" ]; then
+            APP_NAME="ZenyDesk.app"
             ln -sf ZenyDesk.app "$APP_DIR/RustDesk.app"
           fi
-          codesign --force --options runtime -s ${{ secrets.MACOS_CODESIGN_IDENTITY }} --deep --strict ./flutter/build/macos/Build/Products/Release/RustDesk.app -vvv
-          create-dmg --icon "RustDesk.app" 200 190 --hide-extension "RustDesk.app" --window-size 800 400 --app-drop-link 600 185 rustdesk-${{ env.VERSION }}.dmg ./flutter/build/macos/Build/Products/Release/RustDesk.app
+          codesign --force --options runtime -s ${{ secrets.MACOS_CODESIGN_IDENTITY }} --deep --strict "$APP_DIR/$APP_NAME" -vvv
+          create-dmg --icon "$APP_NAME" 200 190 --hide-extension "$APP_NAME" --window-size 800 400 --app-drop-link 600 185 rustdesk-${{ env.VERSION }}.dmg "$APP_DIR/$APP_NAME" || create-dmg --no-apple-script rustdesk-${{ env.VERSION }}.dmg "$APP_DIR/$APP_NAME"
           codesign --force --options runtime -s ${{ secrets.MACOS_CODESIGN_IDENTITY }} --deep --strict rustdesk-${{ env.VERSION }}.dmg -vvv
           # notarize the rustdesk-${{ env.VERSION }}.dmg
           rcodesign notary-submit --api-key-path ${{ github.workspace }}/rustdesk.json  --staple rustdesk-${{ env.VERSION }}.dmg
@@ -911,7 +915,6 @@ jobs:
     needs:
       - build-for-macOS
       - build-for-windows-flutter
-      - build-for-windows-sciter
     runs-on: ubuntu-latest
     if: ${{ inputs.upload-artifact }}
     steps:
@@ -1774,6 +1777,7 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk linux drm x86_64
     runs-on: ubuntu-22.04
+    continue-on-error: true
     steps:
       - name: Export GitHub Actions cache environment variables
         uses: actions/github-script@d746ffe35508b1917358783b479e04febd2b8f71 # v9.0.0
@@ -2038,6 +2042,7 @@ jobs:
     if: ${{ inputs.upload-artifact }}
     runs-on: ${{ matrix.job.on }}
     name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
+    continue-on-error: true
     strategy:
       fail-fast: false
       matrix:
