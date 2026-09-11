@@ -2,6 +2,9 @@
 name: Build flutter-rust-bridge
 # 2023-11-23 18:00:00+00:00
 
+permissions:
+  contents: read
+
 on:
   workflow_call:
 
