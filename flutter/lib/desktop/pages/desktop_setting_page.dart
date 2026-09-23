@@ -2448,9 +2448,12 @@ class _AboutState extends State<_About> {
               SelectionArea(
                   child: Text('${translate('ID')}: $myId')
                       .marginSymmetric(vertical: 4.0)),
+              SelectionArea(
+                  child: Text(translate('powered_by_me'))
+                      .marginSymmetric(vertical: 4.0)),
               InkWell(
                   onTap: () {
-                    launchUrlString('https://rustdesk.com/privacy.html');
+                    launchUrlString('https://zenydesk.com/privacidade');
                   },
                   child: Text(
                     translate('Privacy Statement'),
@@ -2458,39 +2461,58 @@ class _AboutState extends State<_About> {
                   ).marginSymmetric(vertical: 4.0)),
               InkWell(
                   onTap: () {
-                    launchUrlString('https://rustdesk.com');
+                    launchUrlString('https://zenydesk.com/');
                   },
                   child: Text(
                     translate('Website'),
                     style: linkStyle,
                   ).marginSymmetric(vertical: 4.0)),
               Container(
-                decoration: const BoxDecoration(color: Color(0xFF2c8cff)),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2c8cff),
+                  borderRadius: BorderRadius.circular(6.0),
+                ),
                 padding:
-                    const EdgeInsets.symmetric(vertical: 24, horizontal: 8),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
                 child: SelectionArea(
                     child: Row(
                   children: [
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                        children: const [
                           Text(
-                            'Copyright © ${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\n$license',
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                          Text(
-                            translate('Slogan_tip'),
+                            'Selos de Confiança e Segurança:',
                             style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white),
-                          )
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            '• Empresa verificada e em estrita conformidade com a privacidade digital.\n'
+                            '• Verificada por Reclame AQUI\n'
+                            '• Comprometido à Conformidade LGPD',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                height: 1.4),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            '© 2026 CERTIMIX (CHL COMPANHIA DIGITAL LTDA). CNPJ: 35.624.635/0001-44. Todos os direitos reservados.\n'
+                            'Protegemos seus dados de acordo com a Lei Geral de Proteção de Dados (Lei nº 13.709/2018).',
+                            style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 11,
+                                height: 1.3),
+                          ),
                         ],
                       ),
                     ),
                   ],
                 )),
-              ).marginSymmetric(vertical: 4.0)
+              ).marginSymmetric(vertical: 8.0)
             ],
           ).marginOnly(left: _kContentHMargin)
         ]),

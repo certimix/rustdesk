@@ -217,9 +217,9 @@ exclude = ["vdi/host"]
 libxdo-sys = { path = "libs/libxdo-sys-stub" }
 
 [package.metadata.winres]
-LegalCopyright = "Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved."
-ProductName = "Zenydesk"
-FileDescription = "RustDesk Remote Desktop"
+LegalCopyright = "Copyright © 2026 CERTIMIX (CHL COMPANHIA DIGITAL LTDA). Todos os direitos reservados."
+ProductName = "ZenyDesk"
+FileDescription = "ZenyDesk Remote Desktop"
 OriginalFilename = "zenydesk.exe"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
