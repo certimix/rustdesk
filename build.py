@@ -740,6 +740,18 @@ def build_flutter_deb(version, features):
     system2('rm tmpdeb/usr/bin/rustdesk || true')
     system2(
         f'cp -r {flutter_build_dir}/* tmpdeb/usr/share/rustdesk/')
+    if os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk'):
+        try:
+            os.symlink('zenydesk', 'tmpdeb/usr/share/rustdesk/rustdesk')
+        except Exception:
+            shutil.copy2('tmpdeb/usr/share/rustdesk/zenydesk', 'tmpdeb/usr/share/rustdesk/rustdesk')
+    elif os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk'):
+        try:
+            os.symlink('rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
+        except Exception:
+            shutil.copy2('tmpdeb/usr/share/rustdesk/rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
+    system2('ln -sf /usr/share/rustdesk/zenydesk tmpdeb/usr/bin/zenydesk || true')
+    system2('ln -sf /usr/share/rustdesk/rustdesk tmpdeb/usr/bin/rustdesk || true')
     system2(
         'cp ../res/rustdesk.service tmpdeb/usr/share/rustdesk/files/systemd/')
     system2(
@@ -848,6 +860,18 @@ def build_deb_from_folder(version, binary_folder, want_drm=False):
     system2('rm tmpdeb/usr/bin/rustdesk || true')
     system2(
         f'cp -r ../{binary_folder}/* tmpdeb/usr/share/rustdesk/')
+    if os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk'):
+        try:
+            os.symlink('zenydesk', 'tmpdeb/usr/share/rustdesk/rustdesk')
+        except Exception:
+            shutil.copy2('tmpdeb/usr/share/rustdesk/zenydesk', 'tmpdeb/usr/share/rustdesk/rustdesk')
+    elif os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk'):
+        try:
+            os.symlink('rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
+        except Exception:
+            shutil.copy2('tmpdeb/usr/share/rustdesk/rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
+    system2('ln -sf /usr/share/rustdesk/zenydesk tmpdeb/usr/bin/zenydesk || true')
+    system2('ln -sf /usr/share/rustdesk/rustdesk tmpdeb/usr/bin/rustdesk || true')
     system2(
         'cp ../res/rustdesk.service tmpdeb/usr/share/rustdesk/files/systemd/')
     system2(
