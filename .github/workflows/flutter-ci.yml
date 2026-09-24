@@ -1,7 +1,7 @@
 name: Full Flutter CI
 
 permissions:
-  contents: read
+  contents: write
 
 on:
   workflow_dispatch:
@@ -23,5 +23,6 @@ on:
 jobs:
   run-ci:
     uses: ./.github/workflows/flutter-build.yml
+    secrets: inherit
     with:
       upload-artifact: false
