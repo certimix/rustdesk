@@ -730,14 +730,13 @@ def build_flutter_deb(version, features):
         ffi_bindgen_function_refactor()
     os.chdir('flutter')
     system2('flutter build linux --release')
-    system2('mkdir -p tmpdeb/usr/bin/')
     system2('mkdir -p tmpdeb/usr/share/rustdesk')
     system2('mkdir -p tmpdeb/usr/share/rustdesk/files/systemd/')
     system2('mkdir -p tmpdeb/usr/share/icons/hicolor/256x256/apps/')
     system2('mkdir -p tmpdeb/usr/share/icons/hicolor/scalable/apps/')
     system2('mkdir -p tmpdeb/usr/share/applications/')
     system2('mkdir -p tmpdeb/usr/share/polkit-1/actions')
-    system2('rm tmpdeb/usr/bin/rustdesk || true')
+    system2('rm -rf tmpdeb/usr/bin || true')
     system2(
         f'cp -r {flutter_build_dir}/* tmpdeb/usr/share/rustdesk/')
     if os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk'):
@@ -750,8 +749,7 @@ def build_flutter_deb(version, features):
             os.symlink('rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
         except Exception:
             shutil.copy2('tmpdeb/usr/share/rustdesk/rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
-    system2('ln -sf /usr/share/rustdesk/zenydesk tmpdeb/usr/bin/zenydesk || true')
-    system2('ln -sf /usr/share/rustdesk/rustdesk tmpdeb/usr/bin/rustdesk || true')
+    system2('rm -rf tmpdeb/usr/bin || true')
     system2(
         'cp ../res/rustdesk.service tmpdeb/usr/share/rustdesk/files/systemd/')
     system2(
@@ -850,14 +848,13 @@ def assert_staged_binary_is_drm():
 
 def build_deb_from_folder(version, binary_folder, want_drm=False):
     os.chdir('flutter')
-    system2('mkdir -p tmpdeb/usr/bin/')
     system2('mkdir -p tmpdeb/usr/share/rustdesk')
     system2('mkdir -p tmpdeb/usr/share/rustdesk/files/systemd/')
     system2('mkdir -p tmpdeb/usr/share/icons/hicolor/256x256/apps/')
     system2('mkdir -p tmpdeb/usr/share/icons/hicolor/scalable/apps/')
     system2('mkdir -p tmpdeb/usr/share/applications/')
     system2('mkdir -p tmpdeb/usr/share/polkit-1/actions')
-    system2('rm tmpdeb/usr/bin/rustdesk || true')
+    system2('rm -rf tmpdeb/usr/bin || true')
     system2(
         f'cp -r ../{binary_folder}/* tmpdeb/usr/share/rustdesk/')
     if os.path.exists('tmpdeb/usr/share/rustdesk/zenydesk') and not os.path.exists('tmpdeb/usr/share/rustdesk/rustdesk'):
@@ -870,8 +867,7 @@ def build_deb_from_folder(version, binary_folder, want_drm=False):
             os.symlink('rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
         except Exception:
             shutil.copy2('tmpdeb/usr/share/rustdesk/rustdesk', 'tmpdeb/usr/share/rustdesk/zenydesk')
-    system2('ln -sf /usr/share/rustdesk/zenydesk tmpdeb/usr/bin/zenydesk || true')
-    system2('ln -sf /usr/share/rustdesk/rustdesk tmpdeb/usr/bin/rustdesk || true')
+    system2('rm -rf tmpdeb/usr/bin || true')
     system2(
         'cp ../res/rustdesk.service tmpdeb/usr/share/rustdesk/files/systemd/')
     system2(
