@@ -20,12 +20,8 @@ on:
     branches:
       - master
     paths-ignore:
-      - ".github/**"
       - "docs/**"
       - "README.md"
-      - "res/**"
-      - "appimage/**"
-      - "flatpak/**"
 
 jobs:
   # ensure_cargo_fmt:
