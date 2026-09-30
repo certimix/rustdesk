@@ -450,6 +450,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
+
       - name: Install LLVM and Clang
         uses: rustdesk-org/install-llvm-action-32bit@6aa7d9ad3df84dff01cd4596dd0fc880a7f47fce # no release tag; commit 2026-05-26
         with:
@@ -601,6 +606,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
+
       - name: Install flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
@@ -727,6 +737,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
+
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
 
       - name: Import the codesign cert
         if: env.MACOS_P12_BASE64 != null
@@ -1075,6 +1090,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
+
       - name: Install flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
@@ -1352,6 +1372,11 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
+
       - name: Install flutter
         uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
@@ -1522,6 +1547,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
+
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
 
       - name: Set Swap Space
         if: ${{ matrix.job.arch == 'x86_64' }}
@@ -1851,6 +1881,11 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
+
+      - name: Apply ZenyDesk Sovereign Branding and Configuration
+        shell: bash
+        run: |
+          python3 res/apply_zenydesk_config.py || python res/apply_zenydesk_config.py || bash branding/apply.sh || true
 
       - name: Set Swap Space
         uses: pierotofy/set-swap-space@49819abfb41bd9b44fb781159c033dba90353a7c # v1.0

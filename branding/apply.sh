@@ -33,13 +33,13 @@ source "$ENV_FILE"
 set +o allexport
 
 # Sanity checks & defaults
-BRAND_NAME="${BRAND_NAME:-Zenydesk}"
+BRAND_NAME="${BRAND_NAME:-ZenyDesk}"
 BRAND_SLUG="${BRAND_SLUG:-zenydesk}"
 BRAND_DOMAIN="${BRAND_DOMAIN:-zenydesk.com}"
 BRAND_SUPPORT_EMAIL="${BRAND_SUPPORT_EMAIL:-suporte@zenydesk.com}"
-RENDEZVOUS_SERVER="${RENDEZVOUS_SERVER:-api.zenydesk.com.br}"
-RS_PUB_KEY="${RS_PUB_KEY:-YOUR_HOSTINGER_VPS_ED25519_PUBLIC_KEY_HERE}"
-API_SERVER="${API_SERVER:-https://api.zenydesk.com.br}"
+RENDEZVOUS_SERVER="${RENDEZVOUS_SERVER:-zenydesk.com}"
+RS_PUB_KEY="${RS_PUB_KEY:-AUDVAlSeBDEeu4WOGF1a05C6cXh14ZVxi4RP6L2knVQ=}"
+API_SERVER="${API_SERVER:-https://zenydesk.com}"
 ANDROID_PACKAGE_ID="${ANDROID_PACKAGE_ID:-com.zenydesk.client}"
 MACOS_BUNDLE_ID="${MACOS_BUNDLE_ID:-com.zenydesk.client}"
 WINDOWS_SERVICE_NAME="${WINDOWS_SERVICE_NAME:-ZenydeskService}"

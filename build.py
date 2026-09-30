@@ -48,13 +48,23 @@ def apply_zenydesk_config():
                 content
             )
             content = re.sub(
+                r'(?m)^\s*pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = (Default::default\(\)|RwLock::new\(\{[\s\S]*?\n\s*\}\));',
+                '    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = RwLock::new({\\n        let mut m = HashMap::new();\\n        m.insert("api-server".to_string(), "https://zenydesk.com".to_string());\\n        m\\n    });',
+                content
+            )
+            content = re.sub(
                 r'pub const RENDEZVOUS_SERVERS: &\[&str\] = &\[[^\]]*\];',
-                'pub const RENDEZVOUS_SERVERS: &[&str] = &["zenydesk.com", "api.zenydesk.com.br"];',
+                'pub const RENDEZVOUS_SERVERS: &[&str] = &["zenydesk.com"];',
                 content
             )
             content = re.sub(
                 r'pub const RS_PUB_KEY: &str = "[^"]*";',
-                'pub const RS_PUB_KEY: &str = "OeVuKk5nlHiXp+APNn0Y3pC1Iwpwn44JGqrQCsWqmBw=";',
+                'pub const RS_PUB_KEY: &str = "AUDVAlSeBDEeu4WOGF1a05C6cXh14ZVxi4RP6L2knVQ=";',
+                content
+            )
+            content = re.sub(
+                r'pub const LINK_DOCS_HOME: &str = "[^"]*";',
+                'pub const LINK_DOCS_HOME: &str = "https://zenydesk.com";',
                 content
             )
             with open(config_path, 'w', encoding='utf-8') as f:
@@ -62,6 +72,10 @@ def apply_zenydesk_config():
             print("[ZenyDesk] Injected ZenyDesk sovereign servers & branding into hbb_common.")
         except Exception as e:
             print("[ZenyDesk] Warning applying config to hbb_common:", e)
+
+
+# Automatically apply ZenyDesk branding & server config on build script execution
+apply_zenydesk_config()
 
 
 def get_deb_arch() -> str:

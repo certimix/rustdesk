@@ -5,6 +5,15 @@ permissions:
 
 on:
   workflow_dispatch:
+    inputs:
+      upload-artifact:
+        type: boolean
+        description: 'Upload build artifacts to Release'
+        default: true
+      upload-tag:
+        type: string
+        description: 'Release Tag'
+        default: 'nightly'
   pull_request:
     paths-ignore:
     - "docs/**"
@@ -21,4 +30,5 @@ jobs:
     uses: ./.github/workflows/flutter-build.yml
     secrets: inherit
     with:
-      upload-artifact: false
+      upload-artifact: ${{ inputs.upload-artifact == true }}
+      upload-tag: ${{ inputs.upload-tag || 'nightly' }}

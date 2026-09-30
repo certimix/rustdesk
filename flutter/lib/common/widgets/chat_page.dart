@@ -4,6 +4,7 @@ import 'package:flutter_hbb/common.dart';
 import 'package:flutter_hbb/models/chat_model.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../mobile/pages/home_page.dart';
 
@@ -82,6 +83,17 @@ class ChatPage extends StatelessWidget implements PageShape {
         color: Theme.of(context).scaffoldBackgroundColor,
         child: Consumer<ChatModel>(
           builder: (context, chatModel, child) {
+            final currentMessages =
+                chatModel.messages[chatModel.currentKey]?.chatMessages ?? [];
+            final hasConnectedClient = gFFI.serverModel.clients.any(
+                (e) => e.id == chatModel.currentKey.connId && !e.disconnected);
+            final isSessionActive =
+                hasConnectedClient || currentMessages.isNotEmpty;
+
+            if (type == ChatPageType.mobileMain && !isSessionActive) {
+              return _buildEmptyChatState(context);
+            }
+
             final readOnly = type == ChatPageType.mobileMain &&
                     (chatModel.currentKey.connId == ChatModel.clientModeID ||
                         gFFI.serverModel.clients.every((e) =>
@@ -173,6 +185,146 @@ class ChatPage extends StatelessWidget implements PageShape {
               ],
             ).paddingOnly(bottom: 8);
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyChatState(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryTextColor = isDark ? Colors.white : const Color(0xFF0F172A);
+    final secondaryTextColor = isDark ? Colors.grey[400] : const Color(0xFF475569);
+
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 32.0),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 480),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 72,
+                height: 72,
+                decoration: BoxDecoration(
+                  color: MyTheme.accent.withOpacity(0.12),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.forum_rounded,
+                  size: 38,
+                  color: MyTheme.accent,
+                ),
+              ),
+              const SizedBox(height: 18),
+              Text(
+                'Chat ZenyDesk',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: primaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'O chat direto ponto-a-ponto com o cliente ou técnico é ativado automaticamente durante uma sessão de controle remoto ativa.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 13.5,
+                  height: 1.45,
+                  color: secondaryTextColor,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Card(
+                elevation: 0,
+                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+                  ),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.support_agent_rounded, color: Colors.blue, size: 24),
+                  ),
+                  title: Text(
+                    'Suporte Técnico ZenyDesk',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: primaryTextColor),
+                  ),
+                  subtitle: Text(
+                    'Atendimento online ao vivo e abertura de chamados técnicos',
+                    style: TextStyle(fontSize: 12, color: secondaryTextColor),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  onTap: () => launchUrlString('https://zenydesk.com/suporte'),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Card(
+                elevation: 0,
+                color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF8FAFC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(
+                    color: isDark ? Colors.white12 : const Color(0xFFE2E8F0),
+                  ),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: const Icon(Icons.lock_outline_rounded, color: Colors.amber, size: 24),
+                  ),
+                  title: Text(
+                    'ZDNostr Chat P2P',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14, color: primaryTextColor),
+                  ),
+                  subtitle: Text(
+                    'Chat descentralizado criptografado ponta a ponta',
+                    style: TextStyle(fontSize: 12, color: secondaryTextColor),
+                  ),
+                  trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 14),
+                  onTap: () => launchUrlString('https://zenydesk.com/zdnostr'),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade600,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    'Aguardando conexão com um parceiro ou ID remoto',
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      color: isDark ? Colors.grey[400] : Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

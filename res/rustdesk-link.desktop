@@ -1,11 +1,11 @@
 [Desktop Entry]
 Name=ZenyDesk
 NoDisplay=true
-MimeType=x-scheme-handler/rustdesk;
+MimeType=x-scheme-handler/zenydesk;
 TryExec=zenydesk
 Exec=zenydesk %u
 Icon=zenydesk
 Terminal=false
 Type=Application
 StartupNotify=false
-StartupWMClass=rustdesk
+StartupWMClass=zenydesk
